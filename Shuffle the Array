@@ -1,0 +1,13 @@
+int* shuffle(int* nums, int numsSize, int n, int* returnSize){
+
+    int* ret = malloc(numsSize*sizeof(int));
+    *returnSize = numsSize;
+
+    int retIdx = 0, left = 0, right = numsSize/2;
+    
+    while(right < numsSize){
+        ret[retIdx++] = nums[left++];
+        ret[retIdx++] = nums[right++];
+    }
+    return ret;
+}
