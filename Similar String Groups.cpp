@@ -1,39 +1,46 @@
-class Solution{
+class Solution {
 public:
-    vector<vector<int>> chefAndWells(int n,int m,vector<vector<char>> &c){
-        // Code here
-        vector<vector<int>>res(n, vector<int>(m,-1));
-        vector<vector<bool>>vis(n, vector<bool>(m,0));
-        queue<pair<int, pair<int,int>>>q;
-        
-        for(int i=0; i<n; i++){
-            for(int j=0; j<m; j++){
-                if(c[i][j]=='N'){
-                    vis[i][j]=1;
-                    res[i][j]=0;
-                } if(c[i][j]=='W'){
-                    vis[i][j]=1;
-                    q.push({0,{i,j}});
-                    res[i][j]=0;
-                }if(c[i][j]=='.') res[i][j]=0;
-            }
-        }
-        int dx[4]={0,0,1,-1};
-        int dy[4]={1,-1,0,0};
-        while(!q.empty()){
-            auto x= q.front();
-            int dist=x.first, row=x.second.first, col=x.second.second;
-            q.pop();
-            for(int i=0;i<4;i++){
-                int r = row + dx[i];
-                int co = col + dy[i];
-                if(r>=0 and r<n and co>=0 and co<m and !vis[r][co] and (c[r][co]=='H' or c[r][co]=='.')){
-                    if(c[r][co]=='H') res[r][co] = 2*(dist +1);
-                    q.push({dist+1,{r,co}});
-                    vis[r][co]=1;
+    int p[300], r[300], sum;
+    int numSimilarGroups(vector<string>& strs) {
+        int n = strs.size();
+        sum = n;
+        for (int i = 0; i < n; i++) p[i] = i, r[i] = 1;
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (similar(strs[i], strs[j])) {
+                    Union(i, j);
                 }
             }
         }
-        return res;
+        return sum;
+    }
+    
+    bool similar(string const& s1, string const& s2) {
+        int diff = 0;
+        for (int i = 0; i < s1.size(); i++) {
+            if(s1[i] != s2[i]) {
+                diff++;
+                if (diff > 2) return false;
+            }
+        }
+        return diff <= 2;
+    }
+    
+    void Union(int i, int j) {
+        int p1 = find(i);
+        int p2 = find(j);
+        if (p1 == p2) return;
+        if (r[p1] < r[p2]) swap(p1, p2);
+        p[p2] = p1;
+        r[p1] += r[p2];
+        sum--;
+    }
+    
+    int find(int i) {
+        while (i != p[i]) {
+            p[i] = p[p[i]];
+            i = p[i];
+        }
+        return i;
     }
 };
